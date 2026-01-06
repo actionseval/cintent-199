@@ -1,0 +1,64 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2021-2023 Deepchecks (https://www.deepchecks.com)
+#
+# This file is part of Deepchecks.
+# Deepchecks is distributed under the terms of the GNU Affero General
+# Public License (version 3 or later).
+# You should have received a copy of the GNU Affero General Public License
+# along with Deepchecks.  If not, see <http://www.gnu.org/licenses/>.
+# ----------------------------------------------------------------------------
+#
+name: Benchmark-History
+
+# CINTENT >> MANUAL TRIGGER
+# on:
+#   push:
+#     branches: [ main ]
+#   # Manual run
+#   workflow_dispatch:
+on: [repository_dispatch, workflow_dispatch]
+
+env:
+  DISABLE_DEEPCHECKS_ANONYMOUS_TELEMETRY: "true"
+
+jobs:
+  benchmark-history:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # CINTENT >> CANT_RUN
+    # - name: Setup git user
+    #   run: |
+    #     git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+    #     git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+
+    # CINTENT >> INSERT_CINTENT
+    - uses: JavidDitty/setup-cintent@a606c80c34ec190c6a20dea33d6d58ddb6c4e0cc
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        # CINTENT >> CHANGE_VERSION
+        # python-version: "3.9"
+        python-version: "3.10"
+
+    - name: Set Up Env
+      run: make env
+
+    - name: pip freeze
+      run: make freeze
+
+    - name: Run benchmarks
+      run: |
+        .github/scripts/benchmark-history.sh
+
+    # CINTENT >> INSERT_CINTENT
+    - name: Upload CIntent Artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ${{ env.CINTENT_ARTIFACT_NAME }}
+        path: ${{ env.CINTENT_LOGS }}
