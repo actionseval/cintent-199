@@ -35,15 +35,13 @@ jobs:
     #     git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
     #     git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
 
-    # CINTENT >> INSERT_CINTENT
-    - uses: JavidDitty/setup-cintent@a606c80c34ec190c6a20dea33d6d58ddb6c4e0cc
-
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
-        # CINTENT >> CHANGE_VERSION
-        # python-version: "3.9"
-        python-version: "3.10"
+        python-version: "3.9"
+
+    # CINTENT >> INSERT_CINTENT
+    - uses: JavidDitty/setup-cintent@3e5b2faf83a2ad32c22a1cd0f86f5f20ea53a5ab
 
     - name: Set Up Env
       run: make env
